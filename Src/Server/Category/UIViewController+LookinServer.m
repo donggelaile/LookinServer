@@ -15,14 +15,14 @@
 + (void)load {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        Method oriMethod = class_getInstanceMethod([UIViewController class], @selector(viewDidLoad));
-        Method newMethod = class_getInstanceMethod([UIViewController class], @selector(lks_viewDidLoad));
+        Method oriMethod = class_getInstanceMethod([UIViewController class], @selector(setView:));
+        Method newMethod = class_getInstanceMethod([UIViewController class], @selector(lks_setView:));
         method_exchangeImplementations(oriMethod, newMethod);
     });
 }
 
-- (void)lks_viewDidLoad {
-    [self lks_viewDidLoad];
+- (void)lks_setView:(UIView*)view {
+    [self lks_setView:view];
     self.view.lks_hostViewController = self;
 }
 
