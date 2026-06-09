@@ -16,7 +16,9 @@
 #import "LookinServerDefines.h"
 #import "LKS_TraceManager.h"
 #import "LKS_MultiplatformAdapter.h"
+#if LOOKIN_SERVER_WIRELESS
 #import "ECOChannelManager.h"
+#endif
 
 #if LOOKIN_SERVER_WIRELESS
 @import CocoaAsyncSocket;
@@ -31,8 +33,10 @@ NSString *const LKS_ConnectionDidEndNotificationName = @"LKS_ConnectionDidEndNot
 @property(nonatomic, strong) LKS_RequestHandler *requestHandler;
 @property(nonatomic, strong) LKS_RequestHandler *wirelessRequestHandler;
 
+#if LOOKIN_SERVER_WIRELESS
 @property(nonatomic, strong) ECOChannelManager *wirelessChannel;
 @property(nonatomic, strong) ECOChannelDeviceInfo *wirelessDevice;
+#endif
 
 @property BOOL hasStartWirelessConnnection;
 
@@ -281,9 +285,11 @@ NSString *const LKS_ConnectionDidEndNotificationName = @"LKS_ConnectionDidEndNot
 - (void)_sendData:(NSObject *)data frameOfType:(uint32_t)frameOfType tag:(uint32_t)tag isWireless:(BOOL)isWireless {
 	NSData *archivedData = [NSKeyedArchiver archivedDataWithRootObject:data];
     if (isWireless) {
+        #if LOOKIN_SERVER_WIRELESS
         if (self.wirelessDevice.isConnected) {
             [self.wirelessChannel sendPacket:archivedData extraInfo:@{@"tag": @(tag), @"type": @(frameOfType)} toDevice:self.wirelessDevice];
         }
+        #endif
     } else {
         if (self.peerChannel_) {
             dispatch_data_t payload = [archivedData createReferencingDispatchData];

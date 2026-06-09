@@ -10,24 +10,9 @@
 
 #import "UIViewController+LookinServer.h"
 #import "UIView+LookinServer.h"
-#import <objc/runtime.h>
 #import "LKS_MultiplatformAdapter.h"
 
 @implementation UIViewController (LookinServer)
-
-+ (void)load {
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        Method oriMethod = class_getInstanceMethod([UIViewController class], @selector(setView:));
-        Method newMethod = class_getInstanceMethod([UIViewController class], @selector(lks_setView:));
-        method_exchangeImplementations(oriMethod, newMethod);
-    });
-}
-
-- (void)lks_setView:(UIView*)view {
-    [self lks_setView:view];
-    self.view.lks_hostViewController = self;
-}
 
 + (nullable UIViewController *)lks_visibleViewController {
     
